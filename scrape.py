@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
+import random
 
 
 def simple_get(url):
@@ -42,7 +43,7 @@ def log_error(e):
 
 
 if __name__ == "__main__":
-    for i in range(1, 5):
+    for i in range(5, 9):
         page = "http://www.uschess.org/msa/MbrDtlMain.php?1243502" + str(i)
         raw_html = simple_get(page)
         html = BeautifulSoup(raw_html, 'html.parser')
@@ -52,5 +53,8 @@ if __name__ == "__main__":
             print("Non-existent player")
             continue
         state_index = st.index("State")
+        gender_index = st.index("Gender")
         state = st[state_index + 21: state_index + 23]
+        gender = st[gender_index + 22: gender_index + 23]
         print(state)
+        print(gender)
