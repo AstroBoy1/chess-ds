@@ -43,10 +43,22 @@ def log_error(e):
 
 
 if __name__ == "__main__":
+    '''TODO: Store the data in a database, try google colab'''
     for i in range(5, 9):
         page = "http://www.uschess.org/msa/MbrDtlMain.php?1243502" + str(i)
+        rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216"
+        # Pages then go http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216.2
+        # http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216.3
+        # http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216.11
+        # and so forth
+        # Event data, event name, reg rtg before / after
+        # What do tournament results look like
         raw_html = simple_get(page)
         html = BeautifulSoup(raw_html, 'html.parser')
+        table = html.find('table', {'valign': 'top', 'width': '960', 'cellspacing': '0', 'cellpadding': '4', 'border': '1'})
+        dates = table.find_all("td", {'width': '120'})
+        tournaments = table.find_all("td", {'width': '350'})
+        ratings = table.find_all("td", {'width': '160'})
         s = str(html)
         st = s.strip()
         if "Error" in st:
