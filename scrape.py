@@ -136,7 +136,8 @@ if __name__ == "__main__":
     user_events_df = pd.DataFrame()
     user_events = []
     users = []
-    '''TODO: Store the data in a sqlite database, try Google Colab, some testing, loop through each tournament page'''
+    '''TODO: Store the data in a sqlite database, try Google Colab, some testing, loop through each tournament page,
+    add to the list user events'''
     # Finish get_event_ratings function
     for i in range(1, 2):
         uid = str(1243502) + str(i)
@@ -153,3 +154,15 @@ if __name__ == "__main__":
         raw_html = simple_get(rating_page)
         html = BeautifulSoup(raw_html, 'html.parser')
         get_event_ratings(html, uid, user_events)
+
+    user_id_list = []
+    gender_list = []
+    state_list = []
+    for user in users:
+        user_id_list.append(user.user_id)
+        gender_list.append(user.gender)
+        state_list.append(user.state)
+    user_df['uid'] = user_id_list
+    user_df['gender'] = gender_list
+    user_df['state'] = state_list
+    print(user_df)
