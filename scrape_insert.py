@@ -6,6 +6,7 @@ import re
 import sqlite3
 import os.path
 import py_sql
+import sys
 
 
 def simple_get(url):
@@ -130,15 +131,13 @@ def get_event_ratings(parsed_html, user_id, conn, c):
 
 
 def main():
-    """TODO: arg parsing"""
-    if __name__ == '__main__':
-        py_sql.main()
+    """Test on VM"""
+    py_sql.main()
     base_dir = os.path.dirname(os.path.abspath(__file__))
     db_name = 'testDB.db'
     db_path = os.path.join(base_dir, db_name)
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-
     for i in range(1, 2):
         uid = str(1243502) + str(i)
         uid = str(12436954)
@@ -169,3 +168,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

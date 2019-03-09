@@ -3,7 +3,6 @@ import read_sql
 
 
 def test_users():
-    #scrape_insert.main()
     users, events = read_sql.main()
     assert users == [(12436954, 'M', 'MD')]
 
