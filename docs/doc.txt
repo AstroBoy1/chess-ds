@@ -1,0 +1,6 @@
+"""Rating has to be text because there can be provisional ratings"""
+
+# Pages then go http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216.2
+# http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216.3
+# http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216.11
+# and so forth
