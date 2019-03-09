@@ -130,6 +130,7 @@ def get_event_ratings(parsed_html, user_id, conn, c):
 
 
 def main():
+    """TODO: arg parsing"""
     """Rating has to be text because there can be provisional ratings"""
     if __name__ == '__main__':
         py_sql.main()

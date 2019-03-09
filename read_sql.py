@@ -10,12 +10,14 @@ def main():
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     c.execute("SELECT * FROM users;")
-    print(c.fetchall())
+    users = c.fetchall()
+    print(users)
     c.execute("SELECT * FROM user_events;")
     events = c.fetchall()
     print(len(events))
     print(events[0])
     conn.close()
+    return users, events
 
 
 if __name__ == "__main__":
