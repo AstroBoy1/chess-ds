@@ -131,7 +131,6 @@ def get_event_ratings(parsed_html, user_id, conn, c):
 
 def main():
     """TODO: arg parsing"""
-    """Rating has to be text because there can be provisional ratings"""
     if __name__ == '__main__':
         py_sql.main()
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -145,10 +144,6 @@ def main():
         uid = str(12436954)
         page = "http://www.uschess.org/msa/MbrDtlMain.php?" + uid
         rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid
-        # Pages then go http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216.2
-        # http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216.3
-        # http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216.11
-        # and so forth
         raw_html = simple_get(page)
         html = BeautifulSoup(raw_html, 'html.parser')
         print("Getting user")
