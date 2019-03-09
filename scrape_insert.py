@@ -49,7 +49,6 @@ def get_user_info(parsed_html, user_id, conn, c):
     """Takes in html from beautiful soup, finds the gender and state"""
     s = str(parsed_html)
     st = s.strip()
-    values = []
     if "Error" in st:
         print("Non-existent player")
         return -1
@@ -88,42 +87,37 @@ def get_event_ratings(parsed_html, user_id, conn, c):
         tournaments = table.find_all("td", {'width': '350'})
         ratings = table.find_all("td", {'width': '160'})
         rating_i = 0
-        values = []
         for d, t in zip(dates, tournaments):
-            #try:
-            d_s = d.getText()
-            parsed_date = d_s[:10]
-            parsed_event_id = d_s[10:]
-            t_text = t.getText()
-            # Matches anything that starts with ( and ends with ), .* says there can be zero or more of any characters
-            match = re.search("\(.*\)", t_text)
-            start, end = match.span()
-            section = t_text[end:]
-            state = t_text[start + 1:end - 1]
-            tournament_name = t_text[:start - 1]
-            reg_ratings = ratings[rating_i].getText()
-            quick_ratings = ratings[rating_i + 1].getText()
-            blitz_ratings = ratings[rating_i + 2].getText()
-            rating_i += 3
-            reg_rating_before, reg_rating_after, quick_rating_before, quick_rating_after, blitz_rating_before, \
-                blitz_rating_after = None, None, None, None, None, None
-            if "=>" in reg_ratings:
-                reg_rating_before, reg_rating_after = rating_helper(reg_ratings)
-            if "=>" in quick_ratings:
-                quick_rating_before, quick_rating_after = rating_helper(quick_ratings)
-            if "=>" in blitz_ratings:
-                blitz_rating_before, blitz_rating_after = rating_helper(blitz_ratings)
-            # values = (parsed_event_id, user_id, parsed_date, tournament_name, reg_rating_before, reg_rating_after,
-            #                 quick_rating_after, quick_rating_after, blitz_rating_before, blitz_rating_after, section,
-            #                 state)
-            int_type = lambda a: int(a) if a else a
-            values = (int_type(parsed_event_id.strip()), int_type(user_id), parsed_date, tournament_name, reg_rating_before, reg_rating_after,
-                            quick_rating_after, quick_rating_after, blitz_rating_before, blitz_rating_after, section,
-                            state)
-            print(values)
-            # except:
-            #     print("Failed getting info for a tournament")
-            #     continue
+            try:
+                d_s = d.getText()
+                parsed_date = d_s[:10]
+                parsed_event_id = d_s[10:]
+                t_text = t.getText()
+                # Matches anything that starts with ( and ends with ), .* says there can be zero or more of any characters
+                match = re.search("\(.*\)", t_text)
+                start, end = match.span()
+                section = t_text[end:]
+                state = t_text[start + 1:end - 1]
+                tournament_name = t_text[:start - 1]
+                reg_ratings = ratings[rating_i].getText()
+                quick_ratings = ratings[rating_i + 1].getText()
+                blitz_ratings = ratings[rating_i + 2].getText()
+                rating_i += 3
+                reg_rating_before, reg_rating_after, quick_rating_before, quick_rating_after, blitz_rating_before, \
+                    blitz_rating_after = None, None, None, None, None, None
+                if "=>" in reg_ratings:
+                    reg_rating_before, reg_rating_after = rating_helper(reg_ratings)
+                if "=>" in quick_ratings:
+                    quick_rating_before, quick_rating_after = rating_helper(quick_ratings)
+                if "=>" in blitz_ratings:
+                    blitz_rating_before, blitz_rating_after = rating_helper(blitz_ratings)
+                int_type = lambda a: int(a) if a else a
+                values = (int_type(parsed_event_id.strip()), int_type(user_id), parsed_date, tournament_name, reg_rating_before, reg_rating_after,
+                                quick_rating_after, quick_rating_after, blitz_rating_before, blitz_rating_after, section,
+                                state)
+            except:
+                print("Failed getting info for a tournament")
+                continue
             try:
                 c.execute('INSERT INTO user_events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values)
                 conn.commit()
@@ -136,7 +130,6 @@ def get_event_ratings(parsed_html, user_id, conn, c):
 
 
 def main():
-    """TODO: Use logging instead of print"""
     """Rating has to be text because there can be provisional ratings"""
     if __name__ == '__main__':
         py_sql.main()
@@ -148,6 +141,7 @@ def main():
 
     for i in range(1, 2):
         uid = str(1243502) + str(i)
+        uid = str(12436954)
         page = "http://www.uschess.org/msa/MbrDtlMain.php?" + uid
         rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid
         # Pages then go http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216.2
@@ -164,12 +158,15 @@ def main():
         event_return = 0
         print("Getting events")
         while event_return != -1:
-            rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216" + "." + str(count)
+            #rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216" + "." + str(count)
+            rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid + "." + str(count)
             raw_html = simple_get(rating_page)
             html = BeautifulSoup(raw_html, 'html.parser')
             event_return = get_event_ratings(html, uid, conn, c)
-            count += 1
-            count = -1
+            if event_return == 0:
+                count += 1
+            else:
+                break
         print("Inserted events into table")
     conn.close()
 

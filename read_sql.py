@@ -11,8 +11,10 @@ def main():
     c = conn.cursor()
     c.execute("SELECT * FROM users;")
     print(c.fetchall())
-
-    conn.commit()
+    c.execute("SELECT * FROM user_events;")
+    events = c.fetchall()
+    print(len(events))
+    print(events[0])
     conn.close()
 
 
