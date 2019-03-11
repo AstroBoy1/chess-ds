@@ -12,10 +12,11 @@ def main():
     c.execute("SELECT * FROM users;")
     users = c.fetchall()
     print(users)
+    print("Number of users: ", len(users))
     c.execute("SELECT * FROM user_events;")
     events = c.fetchall()
-    print(len(events))
-    print(events[0])
+    print("Number of events: ", len(events))
+    print(events)
     conn.close()
     return users, events
 

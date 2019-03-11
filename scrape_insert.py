@@ -7,6 +7,7 @@ import sqlite3
 import os.path
 import py_sql
 import sys
+import numpy as np
 
 
 def simple_get(url):
@@ -59,12 +60,14 @@ def get_user_info(parsed_html, user_id, conn, c):
         s = st[state_index + 21: state_index + 23]
         g = st[gender_index + 22: gender_index + 23]
         values = (int(user_id), g, s)
+        print(values)
     except:
         print("Couldn't find gender or state")
         return -1
     try:
         c.execute("INSERT INTO users VALUES (?, ?, ?)", values)
         conn.commit()
+        print("Inserted user into database table")
     except:
         print("Couldn't insert users into table")
         return -1
@@ -125,35 +128,48 @@ def get_event_ratings(parsed_html, user_id, conn, c):
             except:
                 print("Couldn't insert events into table")
                 break
+        print("Inserted events into table")
         return 0
     else:
+        print("No events")
         return -1
 
 
 def main():
-    """Test on VM"""
+    # Re create the database
     py_sql.main()
+
     base_dir = os.path.dirname(os.path.abspath(__file__))
     db_name = 'testDB.db'
     db_path = os.path.join(base_dir, db_name)
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    for i in range(1, 2):
-        uid = str(1243502) + str(i)
-        uid = str(12436954)
+    lowest_id = 12435021
+    highest_id = 12939951
+    # bayesian better than random better than grid search
+    id_space = list(range(lowest_id, highest_id + 1))
+    num_sample = 1
+    uids = np.random.choice(id_space, size=num_sample, replace=False)
+    uid_count = 0
+    for uid in uids:
+        if uid_count > num_sample:
+            break
+        uid = str(uid)
+        #uid = "12735671"
+        # uid = str(1243502) + str(i)
+        # uid = str(12436954)
         page = "http://www.uschess.org/msa/MbrDtlMain.php?" + uid
-        rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid
+        print("\n", "page: ", page)
+        # rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid
         raw_html = simple_get(page)
         html = BeautifulSoup(raw_html, 'html.parser')
         print("Getting user")
         get_user_info(html, uid, conn, c)
-        print("Inserted user into database table")
-
         count = 1
         event_return = 0
         print("Getting events")
         while event_return != -1:
-            #rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216" + "." + str(count)
+            # rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216" + "." + str(count)
             rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid + "." + str(count)
             raw_html = simple_get(rating_page)
             html = BeautifulSoup(raw_html, 'html.parser')
@@ -162,7 +178,7 @@ def main():
                 count += 1
             else:
                 break
-        print("Inserted events into table")
+        uid_count += 1
     conn.close()
 
 
