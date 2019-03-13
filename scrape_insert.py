@@ -54,7 +54,8 @@ def get_user_info(parsed_html, user_id, conn, c):
     if "Error" in st:
         print("Non-existent player")
         return -1
-    state_index = st.index("State")
+    #state_index = st.index("State")
+    state_index = s.rfind("State")
     gender_index = st.index("Gender")
     try:
         s = st[state_index + 21: state_index + 23]
@@ -158,6 +159,7 @@ def main():
         #uid = "12735671"
         # uid = str(1243502) + str(i)
         # uid = str(12436954)
+        uid = "12641216"
         page = "http://www.uschess.org/msa/MbrDtlMain.php?" + uid
         print("\n", "page: ", page)
         # rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid
@@ -169,8 +171,10 @@ def main():
         event_return = 0
         print("Getting events")
         while event_return != -1:
-            # rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216" + "." + str(count)
+            if count > 5:
+                break
             rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid + "." + str(count)
+            #rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216" + "." + str(count)
             raw_html = simple_get(rating_page)
             html = BeautifulSoup(raw_html, 'html.parser')
             event_return = get_event_ratings(html, uid, conn, c)
