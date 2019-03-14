@@ -10,6 +10,10 @@ import sys
 import numpy as np
 import pandas as pd
 import time
+from tqdm import tqdm
+
+
+fh = open("logs.txt", "a")
 
 
 def simple_get(url):
@@ -46,7 +50,9 @@ def log_error(e):
     This function just prints them, but you can
     make it do anything.
     """
-    print(e)
+    # print(e)
+    fh.write(e)
+    fh.write("\n")
 
 
 def get_user_info(parsed_html, user_id, conn, c):
@@ -54,7 +60,9 @@ def get_user_info(parsed_html, user_id, conn, c):
     s = str(parsed_html)
     st = s.strip()
     if "Error" in st:
-        print("Non-existent player")
+        # print("Non-existent player")
+        fh.write("Non-existent player")
+        fh.write("\n")
         return -3
     state_index = s.rfind("State")
     gender_index = st.index("Gender")
@@ -62,16 +70,24 @@ def get_user_info(parsed_html, user_id, conn, c):
         s = st[state_index + 21: state_index + 23]
         g = st[gender_index + 22: gender_index + 23]
         values = (int(user_id), g, s)
-        print(values)
+        # print(values)
+        fh.write(str(values))
+        fh.write("\n")
     except:
-        print("Couldn't find gender or state")
+        # print("Couldn't find gender or state")
+        fh.write("Couldn't find gender or state")
+        fh.write("\n")
         return -2
     try:
         c.execute("INSERT INTO users VALUES (?, ?, ?)", values)
         conn.commit()
-        print("Inserted user into database table")
+        # print("Inserted user into database table")
+        fh.write("Inserted user into database table")
+        fh.write("\n")
     except:
-        print("Couldn't insert users into table")
+        # print("Couldn't insert users into table")
+        fh.write("Couldn't insert users into table")
+        fh.write("\n")
         return -1
     return 0
 
@@ -123,27 +139,35 @@ def get_event_ratings(parsed_html, user_id, conn, c):
                                 quick_rating_after, quick_rating_after, blitz_rating_before, blitz_rating_after, section,
                                 state)
             except:
-                print("Failed getting info for a tournament")
+                # print("Failed getting info for a tournament")
+                fh.write("Failed getting info for a tournament")
+                fh.write("\n")
                 continue
             try:
                 c.execute('INSERT INTO user_events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values)
                 conn.commit()
             except:
                 event_insert_error = True
-                print("Couldn't insert events into table")
+                # print("Couldn't insert events into table")
+                fh.write("Couldn't insert events into table")
+                fh.write("\n")
                 break
-        print("Inserted events into table")
+        # print("Inserted events into table")
+        fh.write("Inserted events into table")
+        fh.write("\n")
         if not event_insert_error:
             return 0
         else:
             return -3
     else:
-        print("No events")
+        # print("No events")
+        fh.write("No events")
+        fh.write("\n")
         return -2
 
 
 def main():
-    num_sample = 100
+    num_sample = 10
 
     # Re create the database
     py_sql.main()
@@ -157,14 +181,14 @@ def main():
     highest_id = 12939951
     # bayesian better than random better than grid search
     id_space = list(range(lowest_id, highest_id + 1))
-    #uids_chosen = []
-    #uids_users = []
-    #uids_events = []
+    # uids_chosen = []
+    # uids_users = []
+    # uids_events = []
     uids = np.random.choice(id_space, size=num_sample, replace=False)
-    #uids_chosen.append(uids)
+    # uids_chosen.append(uids)
     uid_count = 0
     start = time.time()
-    for uid in uids:
+    for uid in tqdm(uids):
         if uid_count > num_sample:
             break
         uid = str(uid)
@@ -173,22 +197,28 @@ def main():
         # uid = str(12436954)
         # uid = "12641216"
         page = "http://www.uschess.org/msa/MbrDtlMain.php?" + uid
-        print("\n", "page: ", page)
+        # print("\n", "page: ", page)
+        fh.write("page: " + page)
+        fh.write("\n")
         # rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid
         raw_html = simple_get(page)
         html = BeautifulSoup(raw_html, 'html.parser')
-        print("Getting user")
+        # print("Getting user")
+        fh.write("Getting user")
+        fh.write("\n")
         user_r = get_user_info(html, uid, conn, c)
-        #uids_users.append(user_r)
+        # uids_users.append(user_r)
         count = 1
         event_return = 0
-        print("Getting events")
-        #uid_event_list = []
+        # print("Getting events")
+        fh.write("Getting events")
+        fh.write("\n")
+        # uid_event_list = []
         while event_return == 0:
             # if count > 5:
             #     break
             rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid + "." + str(count)
-            #rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216" + "." + str(count)
+            # rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216" + "." + str(count)
             raw_html = simple_get(rating_page)
             html = BeautifulSoup(raw_html, 'html.parser')
             event_return = get_event_ratings(html, uid, conn, c)
@@ -196,19 +226,22 @@ def main():
                 count += 1
             else:
                 break
-            #uid_event_list.append(event_return)
+            # uid_event_list.append(event_return)
         uid_count += 1
-        #uids_events.append(uid_event_list)
+        # uids_events.append(uid_event_list)
     conn.close()
     end = time.time()
-    print("Took this many seconds: ", end - start)
+    # print("Took this many seconds: ", end - start)
+    fh.write("Took this many seconds: " + str(round(end - start)))
+    fh.write("\n")
     # results_df = pd.DataFrame()
     # results_df['uids'] = uids_chosen
     # results_df['uid_users'] = uids_users
     # results_df['events'] = uids_events
     # results_df.to_csv("results/scraping_results.csv")
+    fh.write("Finished!")
+    fh.close()
 
 
 if __name__ == "__main__":
     main()
-
