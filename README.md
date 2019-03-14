@@ -1,1 +1,3 @@
 # chess-ds
+
+update requirements
