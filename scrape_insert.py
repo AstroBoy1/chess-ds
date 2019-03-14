@@ -8,6 +8,8 @@ import os.path
 import py_sql
 import sys
 import numpy as np
+import pandas as pd
+import time
 
 
 def simple_get(url):
@@ -53,8 +55,7 @@ def get_user_info(parsed_html, user_id, conn, c):
     st = s.strip()
     if "Error" in st:
         print("Non-existent player")
-        return -1
-    #state_index = st.index("State")
+        return -3
     state_index = s.rfind("State")
     gender_index = st.index("Gender")
     try:
@@ -64,7 +65,7 @@ def get_user_info(parsed_html, user_id, conn, c):
         print(values)
     except:
         print("Couldn't find gender or state")
-        return -1
+        return -2
     try:
         c.execute("INSERT INTO users VALUES (?, ?, ?)", values)
         conn.commit()
@@ -84,6 +85,7 @@ def rating_helper(rating_string):
 
 def get_event_ratings(parsed_html, user_id, conn, c):
     """Takes in the html from beautiful soup and gets the tournament event id, dates, and ratings"""
+    event_insert_error = False
     if "Error" in str(parsed_html):
         return -1
     table = parsed_html.find('table', {'valign': 'top', 'width': '960', 'cellspacing': '0', 'cellpadding': '4', 'border': '1'})
@@ -127,16 +129,22 @@ def get_event_ratings(parsed_html, user_id, conn, c):
                 c.execute('INSERT INTO user_events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values)
                 conn.commit()
             except:
+                event_insert_error = True
                 print("Couldn't insert events into table")
                 break
         print("Inserted events into table")
-        return 0
+        if not event_insert_error:
+            return 0
+        else:
+            return -3
     else:
         print("No events")
-        return -1
+        return -2
 
 
 def main():
+    num_sample = 100
+
     # Re create the database
     py_sql.main()
 
@@ -149,30 +157,36 @@ def main():
     highest_id = 12939951
     # bayesian better than random better than grid search
     id_space = list(range(lowest_id, highest_id + 1))
-    num_sample = 1
+    #uids_chosen = []
+    #uids_users = []
+    #uids_events = []
     uids = np.random.choice(id_space, size=num_sample, replace=False)
+    #uids_chosen.append(uids)
     uid_count = 0
+    start = time.time()
     for uid in uids:
         if uid_count > num_sample:
             break
         uid = str(uid)
-        #uid = "12735671"
+        # uid = "12735671"
         # uid = str(1243502) + str(i)
         # uid = str(12436954)
-        uid = "12641216"
+        # uid = "12641216"
         page = "http://www.uschess.org/msa/MbrDtlMain.php?" + uid
         print("\n", "page: ", page)
         # rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid
         raw_html = simple_get(page)
         html = BeautifulSoup(raw_html, 'html.parser')
         print("Getting user")
-        get_user_info(html, uid, conn, c)
+        user_r = get_user_info(html, uid, conn, c)
+        #uids_users.append(user_r)
         count = 1
         event_return = 0
         print("Getting events")
-        while event_return != -1:
-            if count > 5:
-                break
+        #uid_event_list = []
+        while event_return == 0:
+            # if count > 5:
+            #     break
             rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid + "." + str(count)
             #rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216" + "." + str(count)
             raw_html = simple_get(rating_page)
@@ -182,8 +196,17 @@ def main():
                 count += 1
             else:
                 break
+            #uid_event_list.append(event_return)
         uid_count += 1
+        #uids_events.append(uid_event_list)
     conn.close()
+    end = time.time()
+    print("Took this many seconds: ", end - start)
+    # results_df = pd.DataFrame()
+    # results_df['uids'] = uids_chosen
+    # results_df['uid_users'] = uids_users
+    # results_df['events'] = uids_events
+    # results_df.to_csv("results/scraping_results.csv")
 
 
 if __name__ == "__main__":
