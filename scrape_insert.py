@@ -167,8 +167,6 @@ def get_event_ratings(parsed_html, user_id, conn, c):
 
 
 def main():
-    num_sample = 10
-
     # Re create the database
     py_sql.main()
 
@@ -180,6 +178,7 @@ def main():
     lowest_id = 12435021
     highest_id = 12939951
     num_sample = highest_id - lowest_id
+    num_sample = 10
     # bayesian better than random better than grid search
     id_space = list(range(lowest_id, highest_id + 1))
     # uids_chosen = []
@@ -203,7 +202,12 @@ def main():
         fh.write("\n")
         # rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid
         raw_html = simple_get(page)
-        html = BeautifulSoup(raw_html, 'html.parser')
+        try:
+            html = BeautifulSoup(raw_html, 'html.parser')
+        except:
+            fh.write("Broken link")
+            fh.write("\n")
+            continue
         # print("Getting user")
         fh.write("Getting user")
         fh.write("\n")
