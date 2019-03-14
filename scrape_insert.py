@@ -179,6 +179,7 @@ def main():
     c = conn.cursor()
     lowest_id = 12435021
     highest_id = 12939951
+    num_sample = highest_id - lowest_id
     # bayesian better than random better than grid search
     id_space = list(range(lowest_id, highest_id + 1))
     # uids_chosen = []
