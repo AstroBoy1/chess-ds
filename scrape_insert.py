@@ -13,7 +13,7 @@ import time
 from tqdm import tqdm
 
 
-fh = open("logs.txt", "a")
+fh = open("logs2.txt", "a")
 
 
 def simple_get(url):
@@ -38,7 +38,10 @@ def is_good_response(resp):
     """
     Returns True if the response seems to be HTML, False otherwise.
     """
-    content_type = resp.headers['Content-Type'].lower()
+    try:
+        content_type = resp.headers['Content-Type'].lower()
+    except:
+        return False
     return (resp.status_code == 200
             and content_type is not None
             and content_type.find('html') > -1)
@@ -171,14 +174,14 @@ def main():
     py_sql.main()
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    db_name = 'testDB.db'
+    db_name = 'testDB2.db'
     db_path = os.path.join(base_dir, db_name)
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     lowest_id = 12435021
     highest_id = 12939951
     num_sample = highest_id - lowest_id
-    num_sample = 10
+    #num_sample = 10
     # bayesian better than random better than grid search
     id_space = list(range(lowest_id, highest_id + 1))
     # uids_chosen = []
@@ -225,7 +228,13 @@ def main():
             rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?" + uid + "." + str(count)
             # rating_page = "http://www.uschess.org/msa/MbrDtlTnmtHst.php?12641216" + "." + str(count)
             raw_html = simple_get(rating_page)
-            html = BeautifulSoup(raw_html, 'html.parser')
+            try:
+                html = BeautifulSoup(raw_html, 'html.parser')
+            except:
+                fh.write("Broken event")
+                fh.write("\n")
+                event_return = -1
+                break
             event_return = get_event_ratings(html, uid, conn, c)
             if event_return == 0:
                 count += 1
