@@ -1,0 +1,1 @@
+INSERT INTO events_dim SELECT event_id, date, state, event_name FROM user_events GROUP BY event_id;
