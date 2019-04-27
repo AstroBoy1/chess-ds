@@ -1,0 +1,4 @@
+Test the entire pipeline on VM
+Try to test a decent range of uids and see the results
+
+Some of the older sites or players without enough data don't have state ranking, which messes up the indexing

@@ -1,0 +1,125 @@
+page: http://www.uschess.org/msa/MbrDtlMain.php?12862071
+Getting user
+(12862071, 'M', 'VA')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12652303
+Getting user
+(12652303, 'M', 'VA')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12778712
+Getting user
+(12778712, 'M', 'CA')
+Inserted user into database table
+Getting events
+No events
+page: http://www.uschess.org/msa/MbrDtlMain.php?12642109
+Getting user
+(12642109, 'M', 'NY')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12871877
+Getting user
+(12871877, 'M', 'TX')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12622192
+Getting user
+(12622192, 'M', 'OH')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12869264
+Getting user
+(12869264, 'M', 'VA')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12784004
+Getting user
+(12784004, 'F', 'IL')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12460228
+Getting user
+Non-existent player
+Getting events
+page: http://www.uschess.org/msa/MbrDtlMain.php?12545626
+Getting user
+(12545626, 'M', 'DC')
+Inserted user into database table
+Getting events
+No events
+Took this many seconds: 33
+Finished!page: http://www.uschess.org/msa/MbrDtlMain.php?12461006
+Getting user
+(12461006, 'M', 'NY')
+Inserted user into database table
+Getting events
+No events
+page: http://www.uschess.org/msa/MbrDtlMain.php?12749354
+Getting user
+Non-existent player
+Getting events
+page: http://www.uschess.org/msa/MbrDtlMain.php?12742921
+Getting user
+(12742921, 'M', 'IL')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12706484
+Getting user
+(12706484, 'M', 'LA')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12624969
+Getting user
+(12624969, 'M', ' C')
+Inserted user into database table
+Getting events
+Inserted events into table
+Inserted events into table
+Inserted events into table
+Inserted events into table
+Inserted events into table
+Inserted events into table
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12757649
+Getting user
+(12757649, 'F', 'GA')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12611605
+Getting user
+(12611605, 'M', 'TX')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12801356
+Getting user
+(12801356, 'M', 'ND')
+Inserted user into database table
+Getting events
+Inserted events into table
+page: http://www.uschess.org/msa/MbrDtlMain.php?12926549
+Getting user
+(12926549, 'M', 'NY')
+Inserted user into database table
+Getting events
+No events
+page: http://www.uschess.org/msa/MbrDtlMain.php?12881742
+Getting user
+(12881742, 'M', 'LA')
+Inserted user into database table
+Getting events
+No events
+Took this many seconds: 75
+Finished!
